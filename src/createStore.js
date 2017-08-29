@@ -2,12 +2,17 @@
  * @Filename: createStore.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-29 11:09:06
+ * @Last Modified time: 2017-08-29 11:46:55
  */
 
 let listenerID = 1
 
-export function createStore(reducer) {
+/**
+ * [createStore 创建 store]
+ * @param  {[function]} reducer
+ * @return {[object]}  store
+ */
+export default function createStore(reducer) {
   let state
   let listeners = []
 

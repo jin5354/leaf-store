@@ -2,11 +2,11 @@
  * @Filename: index.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-29 11:07:35
+ * @Last Modified time: 2017-08-29 16:01:10
  */
 
 import 'regenerator-runtime/runtime'
-import {createStore, combineReducers} from '../src/index.js'
+import {createStore, combineReducers, compose} from '../src/index.js'
 import test from 'ava'
 
 const initialData = {
@@ -181,7 +181,7 @@ test('combineReducers 组装reduce', t => {
     switch(action.type) {
       case('ADD_COUNTERA'): {
         return Object.assign({}, state, {
-          counterA: state.counterB + 1
+          counterA: state.counterA + 1
         })
         break
       }
@@ -192,14 +192,14 @@ test('combineReducers 组装reduce', t => {
   }
 
   const initialStateB = {
-    counter: 0,
+    counterB: 10,
   }
 
   const reducerB = (state = initialStateB, action) => {
     switch(action.type) {
       case('ADD_COUNTERB'): {
         return Object.assign({}, state, {
-          counter: state.counterB + 1
+          counterB: state.counterB + 1
         })
         break
       }
@@ -214,31 +214,49 @@ test('combineReducers 组装reduce', t => {
     reducerB
   }))
 
-  let actionToken
-  let stateToken
-
-  let unsubscribe = store.subscribe((action, state) => {
-    actionToken = action
-    stateToken = state
-  })
+  t.is(store.getState().reducerA.counterA, 0)
+  t.is(store.getState().reducerB.counterB, 10)
 
   store.dispatch({
-    type: 'ADD_COUNTER'
+    type: 'ADD_COUNTERA'
   })
-
-  t.is(actionToken.type, 'ADD_COUNTER')
-  t.is(stateToken.counter, 1)
-
-  unsubscribe()
-
-  actionToken = null
-  stateToken = null
-
   store.dispatch({
-    type: 'ADD_COUNTER'
+    type: 'ADD_COUNTERB'
   })
 
-  t.is(actionToken, null)
-  t.is(stateToken, null)
+  t.is(store.getState().reducerA.counterA, 1)
+  t.is(store.getState().reducerB.counterB, 11)
+  let oldState = store.getState()
+
+  store.dispatch({})
+
+  t.is(store.getState().reducerA.counterA, 1)
+  t.is(store.getState().reducerB.counterB, 11)
+  let newState = store.getState()
+  t.is(newState, oldState)
+
+})
+
+test('compose 组装reduce', t => {
+
+  function add(num) {
+    return num + 1
+  }
+
+  function multi(num) {
+    return num * 2
+  }
+
+  function divide(num) {
+    return num / 10
+  }
+
+  let composer = compose(divide, multi, add)
+  let composerWithoutArg = compose()
+  let composerWith1Arg = compose(add)
+
+  t.is(composer(1), 0.4)
+  t.is(composerWithoutArg(1), 1)
+  t.is(composerWith1Arg(1), 2)
 
 })

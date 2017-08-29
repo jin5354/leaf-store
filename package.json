@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ava --verbose"
+    "test": "nyc ava --verbose",
+    "build": "rm -rf dist && NODE_ENV=production webpack --progress --config build/webpack.build.config.js"
   },
   "ava": {
     "require": [
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "ava": "^0.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "webpack": "^3.5.5"
   }
 }
