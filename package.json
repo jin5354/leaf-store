@@ -1,8 +1,8 @@
 {
   "name": "leaf-store",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "State manager.",
+  "main": "dist/index.js",
   "scripts": {
     "test": "nyc ava --verbose",
     "build": "rm -rf dist && NODE_ENV=production webpack --progress --config build/webpack.build.config.js"
@@ -13,8 +13,8 @@
     ],
     "babel": "inherit"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "jin5354<xiaoyanjinx@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "ava": "^0.22.0",
     "babel-core": "^6.26.0",
@@ -23,16 +23,16 @@
     "babel-preset-latest": "^6.24.1",
     "babel-register": "^6.26.0",
     "clean-webpack-plugin": "^0.1.16",
-    "coveralls": "^2.13.1",
     "eslint": "^4.5.0",
     "eslint-config-wdfe": "^0.3.2",
     "eslint-loader": "^1.9.0",
-    "nyc": "^11.1.0",
+    "webpack": "^3.5.5",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "webpack": "^3.5.5"
   },
   "devDependencies": {
     "ava": "^0.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "webpack": "^3.5.5"
+    "nyc": "^11.1.0",
+    "coveralls": "^2.13.1"
   }
 }
