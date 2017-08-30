@@ -7,6 +7,14 @@ state manager
 
 ## Install
 
+```bash
+npm install leaf-store --save
+```
+or
+```bash
+yarn add leaf-store
+```
+
 ## Feature
 
 - 支持并兼容已有的 redux 中间件
