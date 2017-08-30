@@ -2,7 +2,7 @@
  * @Filename: applyMiddleware.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-30 15:01:22
+ * @Last Modified time: 2017-08-30 15:09:53
  */
 
 /**
@@ -21,6 +21,8 @@ export default function applyMiddleware(...middlewares) {
       dispatch: dispatch
     }
 
+    // 这里可选使用 compose
+    // 使用中间件将 store.dispatch 重写
     middlewares.reverse().forEach(middleware => {
       dispatch = middleware(storeWithLimitedAPI)(dispatch)
     })

@@ -2,7 +2,7 @@
  * @Filename: createStore.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-30 10:52:07
+ * @Last Modified time: 2017-08-30 15:12:48
  */
 
 let listenerID = 1
@@ -14,6 +14,7 @@ let listenerID = 1
  */
 export default function createStore(reducer, enhancer) {
 
+  // 如果有中间件，在 enhancer(即 applyMiddleware) 中进行 store 初始化与应用中间件工作
   if(typeof enhancer !== 'undefined') {
     return enhancer(createStore)(reducer)
   }
@@ -44,6 +45,7 @@ export default function createStore(reducer, enhancer) {
     })
   }
 
+  // 发一个空的 disptach，获得默认 state, 要求在写 reducer 时在 switch 中加一个 default: return state 分支
   dispatch({})
 
   return {
