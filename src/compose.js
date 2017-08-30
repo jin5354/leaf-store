@@ -2,9 +2,8 @@
  * @Filename: compose.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-29 15:45:32
+ * @Last Modified time: 2017-08-30 10:43:42
  */
-
 
 /**
  * [compose 函数组合]

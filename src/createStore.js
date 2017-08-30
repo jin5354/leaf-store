@@ -2,7 +2,7 @@
  * @Filename: createStore.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-29 11:46:55
+ * @Last Modified time: 2017-08-30 10:52:07
  */
 
 let listenerID = 1
@@ -12,7 +12,12 @@ let listenerID = 1
  * @param  {[function]} reducer
  * @return {[object]}  store
  */
-export default function createStore(reducer) {
+export default function createStore(reducer, enhancer) {
+
+  if(typeof enhancer !== 'undefined') {
+    return enhancer(createStore)(reducer)
+  }
+
   let state
   let listeners = []
 

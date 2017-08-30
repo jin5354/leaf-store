@@ -2,51 +2,19 @@
  * @Filename: index.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-29 16:01:10
+ * @Last Modified time: 2017-08-30 15:07:50
  */
 
 import 'regenerator-runtime/runtime'
-import {createStore, combineReducers, compose} from '../src/index.js'
+import {createStore, combineReducers, compose, applyMiddleware} from '../src/index.js'
 import test from 'ava'
 
-const initialData = {
-  title: '测试title',
-  counter: 0,
-  themeColor: '#cccccc',
-  text: 'hello'
-}
-
-const reducer = (data = initialData, action) => {
-  switch(action.type) {
-    case('CHANGE_TITLE'): {
-      return {
-        ...data,
-        title: action.title
-      }
-      break
-    }
-    case('ADD_COUNTER'): {
-      return {
-        ...data,
-        counter: data.counter++
-      }
-      break
-    }
-    case('CHANGE_THEME_COLOR'): {
-      return {
-        ...data,
-        themeColor: action.themeColor
-      }
-      break
-    }
-    case('CHANGE_TEXT'): {
-      return {
-        ...data,
-        text: action.text
-      }
-      break
-    }
-  }
+const pause = function(time) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
 }
 
 test('basis test 基本测试', t => {
@@ -61,7 +29,6 @@ test('basis test 基本测试', t => {
         return Object.assign({}, state, {
           counter: state.counter + 1
         })
-        break
       }
       default: {
         return state
@@ -93,7 +60,6 @@ test('subscribe 订阅', t => {
         return Object.assign({}, state, {
           counter: state.counter + 1
         })
-        break
       }
       default: {
         return state
@@ -132,7 +98,6 @@ test('unSubscribe 取消订阅', t => {
         return Object.assign({}, state, {
           counter: state.counter + 1
         })
-        break
       }
       default: {
         return state
@@ -183,7 +148,6 @@ test('combineReducers 组装reduce', t => {
         return Object.assign({}, state, {
           counterA: state.counterA + 1
         })
-        break
       }
       default: {
         return state
@@ -201,7 +165,6 @@ test('combineReducers 组装reduce', t => {
         return Object.assign({}, state, {
           counterB: state.counterB + 1
         })
-        break
       }
       default: {
         return state
@@ -260,3 +223,125 @@ test('compose 组装reduce', t => {
   t.is(composerWith1Arg(1), 2)
 
 })
+
+test('applyMiddleware 中间件系统 + 异步', async t => {
+
+  let thunkMiddleware = store => next => action => {
+    if (typeof action === 'function') {
+      return action(store.dispatch, store.getState)
+    }
+    return next(action)
+  }
+
+  const initialState = {
+    counter: 0,
+  }
+
+  const reducer = (state = initialState, action) => {
+    switch(action.type) {
+      case('ADD_COUNTER'): {
+        return Object.assign({}, state, {
+          counter: state.counter + 1
+        })
+      }
+      default: {
+        return state
+      }
+    }
+  }
+
+  const store = createStore(reducer, applyMiddleware(thunkMiddleware))
+
+
+  t.is(store.getState().counter, 0)
+
+  store.dispatch({
+    type: 'ADD_COUNTER'
+  })
+
+  t.is(store.getState().counter, 1)
+
+  store.dispatch((dispatch) => {
+    dispatch({type: 'ADD_COUNTER'})
+    dispatch({type: 'ADD_COUNTER'})
+    dispatch({type: 'ADD_COUNTER'})
+  })
+
+  t.is(store.getState().counter, 4)
+
+  store.dispatch(async (dispatch) => {
+    await pause(200)
+    dispatch({type: 'ADD_COUNTER'})
+    await pause(200)
+    dispatch({type: 'ADD_COUNTER'})
+  })
+  await pause(200)
+  t.is(store.getState().counter, 5)
+  await pause(200)
+  t.is(store.getState().counter, 6)
+
+})
+
+test('applyMiddleware 多中间件串联', async t => {
+
+  const tokenArray = []
+
+  let thunkMiddleware = store => next => action => {
+    tokenArray.push('thunk')
+    if (typeof action === 'function') {
+      return action(store.dispatch, store.getState)
+    }
+    return next(action)
+  }
+
+  let logMiddlewareA = store => next => action => {
+    tokenArray.push('A')
+    let result = next(action)
+    return result
+  }
+
+  let logMiddlewareB = store => next => action => {
+    tokenArray.push('B')
+    let result = next(action)
+    return result
+  }
+
+  let logMiddlewareC = store => next => action => {
+    tokenArray.push('C')
+    let result = next(action)
+    return result
+  }
+
+  const initialState = {
+    counter: 0,
+  }
+
+  const reducer = (state = initialState, action) => {
+    switch(action.type) {
+      case('ADD_COUNTER'): {
+        return Object.assign({}, state, {
+          counter: state.counter + 1
+        })
+      }
+      default: {
+        return state
+      }
+    }
+  }
+
+  const store = createStore(reducer, applyMiddleware(thunkMiddleware, logMiddlewareA, logMiddlewareB, logMiddlewareC))
+
+
+  t.is(store.getState().counter, 0)
+
+  store.dispatch({
+    type: 'ADD_COUNTER'
+  })
+
+  t.deepEqual(tokenArray, ['thunk', 'A', 'B', 'C'])
+  t.is(store.getState().counter, 1)
+
+
+})
+
+
