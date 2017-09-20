@@ -1,6 +1,6 @@
 {
   "name": "leaf-store",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "State manager.",
   "main": "dist/index.js",
   "scripts": {
