@@ -2,7 +2,7 @@
  * @Filename: applyMiddleware.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-30 15:09:53
+ * @Last Modified time: 2017-08-30 18:59:25
  */
 
 /**
@@ -10,6 +10,7 @@
  * @param  {...[type]} middlewares [description]
  * @return {[type]}                [description]
  */
+
 export default function applyMiddleware(...middlewares) {
   return (createStore) => (reducer) => {
     const store = createStore(reducer)
@@ -18,7 +19,7 @@ export default function applyMiddleware(...middlewares) {
     // 仅仅暴露 getState 和 dispatch 两个 api
     const storeWithLimitedAPI = {
       getState: store.getState(),
-      dispatch: dispatch
+      dispatch: (...args) => dispatch(...args)
     }
 
     // 这里可选使用 compose
@@ -26,6 +27,11 @@ export default function applyMiddleware(...middlewares) {
     middlewares.reverse().forEach(middleware => {
       dispatch = middleware(storeWithLimitedAPI)(dispatch)
     })
+
+    // 使用compose 的写法
+
+    // let chain = middlewares.map(middleware => middleware(storeWithLimitedAPI))
+    // dispatch = compose(...chain)(dispatch)
 
     return {
       ...store,

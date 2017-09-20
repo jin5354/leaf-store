@@ -2,7 +2,7 @@
  * @Filename: index.js
  * @Author: jin5354
  * @Email: xiaoyanjinx@gmail.com
- * @Last Modified time: 2017-08-30 15:07:50
+ * @Last Modified time: 2017-08-30 19:00:49
  */
 
 import 'regenerator-runtime/runtime'
@@ -287,7 +287,6 @@ test('applyMiddleware 多中间件串联', async t => {
   const tokenArray = []
 
   let thunkMiddleware = store => next => action => {
-    tokenArray.push('thunk')
     if (typeof action === 'function') {
       return action(store.dispatch, store.getState)
     }
@@ -338,7 +337,8 @@ test('applyMiddleware 多中间件串联', async t => {
     type: 'ADD_COUNTER'
   })
 
-  t.deepEqual(tokenArray, ['thunk', 'A', 'B', 'C'])
+
+  t.deepEqual(tokenArray, ['A', 'B', 'C'])
   t.is(store.getState().counter, 1)
 
 
