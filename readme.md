@@ -5,6 +5,10 @@
 
 state manager
 
+## Intro
+
+[现代前端科技解析 —— Redux 及其中间件](https://www.404forest.com/2017/09/13/modern-web-development-tech-analysis-redux-with-its-middleware/)
+
 ## Install
 
 ```bash
